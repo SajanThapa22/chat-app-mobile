@@ -1,20 +1,20 @@
 import Screen from "@/components/shared/Screen";
-import { useRouter } from "expo-router";
+import { Href, useRouter } from "expo-router";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 const HomeScreen = () => {
   const router = useRouter();
 
-  const navigateToChat = () => {
-    router.push("/chat");
+  const navigateToLogin = () => {
+    router.push("/login" as Href);
   };
 
   return (
     <Screen>
       <View style={styles.container}>
         <Text style={styles.text}>Home page</Text>
-        <TouchableOpacity onPress={navigateToChat} style={styles.button}>
+        <TouchableOpacity onPress={navigateToLogin} style={styles.button}>
           <Text style={styles.buttonText}>Get started</Text>
         </TouchableOpacity>
       </View>
