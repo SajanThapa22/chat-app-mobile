@@ -1,8 +1,9 @@
 // firebase.ts
 
-import { initializeApp, getApps, getApp } from "firebase/app";
+import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+
+import { collection, getFirestore } from "firebase/firestore";
 
 // Helper to get required env variables
 function requiredEnv(name: string): string {
@@ -22,10 +23,14 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase only once
-const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
+const app = initializeApp(firebaseConfig);
 
 // Firebase services
 const auth = getAuth(app);
-const firestore = getFirestore(app);
 
-export { auth, firestore, app, firebaseConfig };
+const db = getFirestore(app);
+
+const userRef = collection(db, "users");
+const roomRef = collection(db, "rooms");
+
+export { auth, app, db, userRef, roomRef, firebaseConfig };
