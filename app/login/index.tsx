@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import {
   widthPercentageToDP as wp,
@@ -15,11 +15,15 @@ import {
 } from "react-native-responsive-screen";
 import { chatLogo } from "@/assets/images";
 import Screen from "@/components/shared/Screen";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { Href, useRouter } from "expo-router";
+import Loading from "@/components/shared/Loading";
+import Feather from "@expo/vector-icons/Feather";
+import CustomKeyboardView from "@/components/shared/CustomKeyboardView";
 
 const LoginScreen = () => {
   const router = useRouter();
+  const [loading, setLoading] = useState<boolean>(false);
+
   const emailRef = useRef<string>("");
   const passwordRef = useRef<string>("");
 
@@ -36,7 +40,7 @@ const LoginScreen = () => {
 
   return (
     <Screen>
-      <View style={styles.container}>
+      <CustomKeyboardView>
         <StatusBar style="dark" />
         <View>
           <View style={styles.imageContainer}>
@@ -46,7 +50,7 @@ const LoginScreen = () => {
           <View>
             <Text style={styles.title}>Login</Text>
             <View style={styles.inputsContainer}>
-              <MaterialIcons name="mail-outline" size={hp(2.7)} color="gray" />
+              <Feather name="mail" size={hp(2.7)} color="gray" />
               <TextInput
                 onChangeText={(value) => (emailRef.current = value)}
                 placeholder="Email address"
@@ -56,11 +60,12 @@ const LoginScreen = () => {
             </View>
 
             <View style={styles.inputsContainer}>
-              <MaterialIcons name="lock-outline" size={hp(2.7)} color="gray" />
+              <Feather name="lock" size={hp(2.7)} color="gray" />
               <TextInput
                 onChangeText={(value) => (passwordRef.current = value)}
                 placeholder="Password"
                 placeholderTextColor="gray"
+                secureTextEntry
                 style={styles.input}
               />
             </View>
@@ -69,9 +74,19 @@ const LoginScreen = () => {
               <Text style={styles.forgotPasswordText}>Forgot password?</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={handleLogin} style={styles.loginButton}>
-              <Text style={styles.loginButtonText}>Login</Text>
-            </TouchableOpacity>
+            {/* Login button */}
+            {loading ? (
+              <View>
+                <Loading />
+              </View>
+            ) : (
+              <TouchableOpacity
+                onPress={handleLogin}
+                style={styles.loginButton}
+              >
+                <Text style={styles.loginButtonText}>Login</Text>
+              </TouchableOpacity>
+            )}
 
             <View style={styles.noAccount}>
               <Text>Don't have an account yet?</Text>
@@ -81,7 +96,7 @@ const LoginScreen = () => {
             </View>
           </View>
         </View>
-      </View>
+      </CustomKeyboardView>
     </Screen>
   );
 };
@@ -132,11 +147,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: "dodgerblue",
     width: "100%",
-    padding: 15,
+    padding: 10,
     marginTop: 10,
   },
   loginButtonText: {
-    fontSize: 18,
+    fontSize: 20,
     color: "#ffffff",
     textAlign: "center",
     fontWeight: "bold",
@@ -159,5 +174,9 @@ const styles = StyleSheet.create({
   signUpText: {
     color: "#3B82F6",
     fontWeight: "semibold",
+  },
+  loadingContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
   },
 });
