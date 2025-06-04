@@ -1,4 +1,3 @@
-import { auth } from "@/services/firebase";
 import { onAuthStateChanged, User } from "firebase/auth";
 import {
   createContext,
@@ -8,6 +7,7 @@ import {
   useState,
 } from "react";
 import authService from "@/services/authService";
+import { auth } from "@/services/firebaseConfig";
 
 interface AuthContextType {
   user: User | null;
@@ -38,8 +38,8 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: Props) => {
   const [user, setUser] = useState<User | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     setLoading(true);

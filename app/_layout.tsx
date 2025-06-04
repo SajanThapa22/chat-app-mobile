@@ -1,16 +1,8 @@
-import { useFonts } from "expo-font";
-import { Href, Slot, Stack, useRouter, useSegments } from "expo-router";
-import { StatusBar } from "expo-status-bar";
+import { Stack } from "expo-router";
 import "react-native-reanimated";
 
-import { useColorScheme } from "@/hooks/useColorScheme";
-import { AuthProvider, useAuth } from "@/context/AuthContext";
-import { useEffect } from "react";
+import { AuthProvider } from "@/contexts/AuthContext";
 
-// const MainLayout = () => {
-
-//   return <Slot />;
-// };
 export default function RootLayout() {
   // const { isAuthenticated } = useAuth();
   // const colorScheme = useColorScheme();
@@ -22,8 +14,8 @@ export default function RootLayout() {
   //   return null;
   // }
 
-  const segments = useSegments();
-  const router = useRouter();
+  // const segments = useSegments();
+  // const router = useRouter();
 
   // useEffect(() => {
   //   //check if user is authenticated or not

@@ -9,7 +9,7 @@ import {
   DocumentReference,
 } from "firebase/firestore";
 
-import { db } from "./firebase"; // Make sure this is your firebase.ts
+import { db } from "./firebaseConfig";
 
 const databaseService = {
   /**

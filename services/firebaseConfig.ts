@@ -1,9 +1,8 @@
-// firebase.ts
-
-import { initializeApp } from "firebase/app";
+import { getApps, initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-
 import { collection, getFirestore } from "firebase/firestore";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { initializeAuth, getReactNativePersistence } from "firebase/auth";
 
 // Helper to get required env variables
 function requiredEnv(name: string): string {
@@ -25,12 +24,15 @@ const firebaseConfig = {
 // Initialize Firebase only once
 const app = initializeApp(firebaseConfig);
 
-// Firebase services
-const auth = getAuth(app);
-
+// Initialize Auth (uses default web persistence in React Native)
+const auth = initializeAuth(app, {
+  persistence: getReactNativePersistence(AsyncStorage),
+});
+// Initialize Firestore
 const db = getFirestore(app);
 
+// Collection references
 const userRef = collection(db, "users");
 const roomRef = collection(db, "rooms");
 
-export { auth, app, db, userRef, roomRef, firebaseConfig };
+export { app, auth, db, userRef, roomRef, firebaseConfig };

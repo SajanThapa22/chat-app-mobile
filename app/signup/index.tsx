@@ -19,8 +19,10 @@ import { Href, useRouter } from "expo-router";
 import Loading from "@/components/shared/Loading";
 import Feather from "@expo/vector-icons/Feather";
 import CustomKeyboardView from "@/components/shared/CustomKeyboardView";
+import { useAuth } from "@/contexts/AuthContext";
 
-const SignUpScreen = () => {
+export default function SignUpScreen() {
+  const { register } = useAuth();
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -33,10 +35,24 @@ const SignUpScreen = () => {
     router.push("/login" as Href);
   };
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
     if (!emailRef.current || !passwordRef.current || !profileRef.current) {
       Alert.alert("Sign Up", "Please fill all the fields");
       return;
+    }
+    setLoading(true);
+
+    const response = await register(
+      emailRef.current,
+      passwordRef.current,
+      userNameRef.current,
+      profileRef.current
+    );
+
+    setLoading(false);
+
+    if (!response.success) {
+      Alert.alert("Sign Up", response.message);
     }
   };
 
@@ -118,9 +134,7 @@ const SignUpScreen = () => {
       </CustomKeyboardView>
     </Screen>
   );
-};
-
-export default SignUpScreen;
+}
 
 const styles = StyleSheet.create({
   container: {

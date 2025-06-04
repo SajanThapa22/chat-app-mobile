@@ -1,11 +1,13 @@
-import { auth } from "@/services/firebase";
 import {
+  getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
   User,
 } from "firebase/auth";
 import databaseService from "@/services/databaseService";
+
+const auth = getAuth();
 
 const register = async (
   email: string,
