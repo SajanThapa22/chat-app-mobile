@@ -23,6 +23,7 @@ import CustomKeyboardView from "@/components/shared/CustomKeyboardView";
 const LoginScreen = () => {
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
+  const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
 
   const emailRef = useRef<string>("");
   const passwordRef = useRef<string>("");
@@ -65,9 +66,18 @@ const LoginScreen = () => {
                 onChangeText={(value) => (passwordRef.current = value)}
                 placeholder="Password"
                 placeholderTextColor="gray"
-                secureTextEntry
+                secureTextEntry={!passwordVisible}
                 style={styles.input}
               />
+              <TouchableOpacity
+                onPress={() => setPasswordVisible(!passwordVisible)}
+              >
+                <Feather
+                  name={passwordVisible ? "eye" : "eye-off"}
+                  size={hp(2.3)}
+                  color="gray"
+                />
+              </TouchableOpacity>
             </View>
 
             <TouchableOpacity style={styles.forgotPassword}>

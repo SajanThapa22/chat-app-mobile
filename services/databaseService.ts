@@ -22,9 +22,20 @@ const databaseService = {
   /**
    * Set data to a document (create or overwrite)
    */
-  async set(collectionName: string, docId: string, data: any, merge = false) {
-    const docRef = doc(db, collectionName, docId);
-    await setDoc(docRef, data, { merge });
+  async set(collectionName: string, docId: string, data: any): Promise<void> {
+    try {
+      const docRef = doc(db, collectionName, docId);
+      await setDoc(docRef, data);
+      console.log(
+        `Document successfully written to ${collectionName}/${docId}`
+      );
+    } catch (error) {
+      console.error(
+        `Error writing document to ${collectionName}/${docId}:`,
+        error
+      );
+      throw error;
+    }
   },
   /**
    * Get a document by path

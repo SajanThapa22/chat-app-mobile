@@ -62,7 +62,7 @@ export const AuthProvider = ({ children }: Props) => {
     user_name: string,
     profile_url: string
   ) => {
-    return await authService.register(email, password, user_name, profile_url);
+    return authService.register(email, password, user_name, profile_url);
   };
 
   const login = async (email: string, password: string) => {

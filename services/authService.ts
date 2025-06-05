@@ -6,8 +6,7 @@ import {
   User,
 } from "firebase/auth";
 import databaseService from "@/services/databaseService";
-
-const auth = getAuth();
+import { auth } from "./firebaseConfig";
 
 const register = async (
   email: string,
@@ -31,7 +30,9 @@ const register = async (
     return { success: true, data: response.user };
   } catch (error) {
     if (error instanceof Error) {
-      return { success: false, message: error.message };
+      let message = error.message;
+      if (message.includes("(auth/invalid-email)")) message = "Invalid email";
+      return { success: false, message };
     }
     return { success: false, message: "Unknown error occurred" };
   }

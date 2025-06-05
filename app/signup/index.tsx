@@ -21,10 +21,12 @@ import Feather from "@expo/vector-icons/Feather";
 import CustomKeyboardView from "@/components/shared/CustomKeyboardView";
 import { useAuth } from "@/contexts/AuthContext";
 
-export default function SignUpScreen() {
+const SignUpScreen = () => {
   const { register } = useAuth();
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
+  const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
 
   const emailRef = useRef<string>("");
   const passwordRef = useRef<string>("");
@@ -36,7 +38,11 @@ export default function SignUpScreen() {
   };
 
   const handleRegister = async () => {
-    if (!emailRef.current || !passwordRef.current || !profileRef.current) {
+    if (
+      !emailRef.current.trim() ||
+      !passwordRef.current.trim() ||
+      !profileRef.current.trim()
+    ) {
       Alert.alert("Sign Up", "Please fill all the fields");
       return;
     }
@@ -53,6 +59,9 @@ export default function SignUpScreen() {
 
     if (!response.success) {
       Alert.alert("Sign Up", response.message);
+      return;
+    } else {
+      router.replace("login" as Href);
     }
   };
 
@@ -93,9 +102,18 @@ export default function SignUpScreen() {
                 onChangeText={(value) => (passwordRef.current = value)}
                 placeholder="Password"
                 placeholderTextColor="gray"
-                secureTextEntry
+                secureTextEntry={!passwordVisible}
                 style={styles.input}
               />
+              <TouchableOpacity
+                onPress={() => setPasswordVisible(!passwordVisible)}
+              >
+                <Feather
+                  name={passwordVisible ? "eye" : "eye-off"}
+                  size={hp(2.3)}
+                  color="gray"
+                />
+              </TouchableOpacity>
             </View>
 
             <View style={styles.inputsContainer}>
@@ -104,14 +122,13 @@ export default function SignUpScreen() {
                 onChangeText={(value) => (profileRef.current = value)}
                 placeholder="Profile url"
                 placeholderTextColor="gray"
-                secureTextEntry
                 style={styles.input}
               />
             </View>
 
             {/* Login button */}
             {loading ? (
-              <View>
+              <View style={styles.signUpButton}>
                 <Loading />
               </View>
             ) : (
@@ -134,7 +151,9 @@ export default function SignUpScreen() {
       </CustomKeyboardView>
     </Screen>
   );
-}
+};
+
+export default SignUpScreen;
 
 const styles = StyleSheet.create({
   container: {
