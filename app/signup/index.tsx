@@ -128,7 +128,7 @@ const SignUpScreen = () => {
 
             {/* Login button */}
             {loading ? (
-              <View style={styles.signUpButton}>
+              <View style={styles.loadingContainer}>
                 <Loading />
               </View>
             ) : (
@@ -222,5 +222,11 @@ const styles = StyleSheet.create({
   loadingContainer: {
     flexDirection: "row",
     justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 10,
+    backgroundColor: "dodgerblue",
+    width: "100%",
+    padding: 5,
+    marginTop: 10,
   },
 });

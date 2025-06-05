@@ -1,6 +1,6 @@
 import { View } from "react-native";
 import LottieView from "lottie-react-native";
-import { loading } from "@/assets/images";
+import { loading } from "@/assets/animations";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -8,7 +8,7 @@ import {
 
 const Loading = () => {
   return (
-    <View style={{ aspectRatio: 1, width: hp(6.5) }}>
+    <View style={{ aspectRatio: 1, width: hp(4.5) }}>
       <LottieView style={{ flex: 1 }} source={loading} autoPlay loop />
     </View>
   );

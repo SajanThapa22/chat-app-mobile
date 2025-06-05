@@ -19,8 +19,10 @@ import { Href, useRouter } from "expo-router";
 import Loading from "@/components/shared/Loading";
 import Feather from "@expo/vector-icons/Feather";
 import CustomKeyboardView from "@/components/shared/CustomKeyboardView";
+import { useAuth } from "@/contexts/AuthContext";
 
 const LoginScreen = () => {
+  const { login } = useAuth();
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
   const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
@@ -32,10 +34,22 @@ const LoginScreen = () => {
     router.push("/signup" as Href);
   };
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!emailRef.current || !passwordRef.current) {
       Alert.alert("Login", "Please fill all the fields");
       return;
+    }
+    setLoading(true);
+
+    const response = await login(emailRef.current, passwordRef.current);
+
+    setLoading(false);
+
+    if (!response.success) {
+      Alert.alert("Login", response.message);
+      return;
+    } else {
+      router.replace("chat" as Href);
     }
   };
 
@@ -86,7 +100,7 @@ const LoginScreen = () => {
 
             {/* Login button */}
             {loading ? (
-              <View>
+              <View style={styles.loadingContainer}>
                 <Loading />
               </View>
             ) : (
@@ -188,5 +202,11 @@ const styles = StyleSheet.create({
   loadingContainer: {
     flexDirection: "row",
     justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 10,
+    backgroundColor: "dodgerblue",
+    width: "100%",
+    padding: 5,
+    marginTop: 10,
   },
 });
