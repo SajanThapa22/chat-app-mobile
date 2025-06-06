@@ -54,7 +54,7 @@ export const AuthProvider = ({ children }: Props) => {
       setLoading(false);
     });
     return unsub;
-  }, [user]);
+  }, []);
 
   const register = async (
     email: string,

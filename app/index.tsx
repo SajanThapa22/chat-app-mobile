@@ -1,19 +1,45 @@
 import { chatLogo } from "@/assets/images";
 import Screen from "@/components/shared/Screen";
+import { useAuth } from "@/contexts/AuthContext";
 import { Href, useRouter } from "expo-router";
-import React from "react";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import React, { useEffect } from "react";
+import {
+  ActivityIndicator,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 
 const HomeScreen = () => {
+  const { user, loading: authLoading, isAuthenticated } = useAuth();
   const router = useRouter();
+
+  useEffect(() => {
+    if (!authLoading && isAuthenticated) {
+      router.replace("/chat" as Href);
+    }
+  }, [isAuthenticated, authLoading]);
 
   const navigateToLogin = () => {
     router.push("/login" as Href);
   };
+  const navigateToChat = () => {
+    router.push("/chat" as Href);
+  };
+
+  if (authLoading) {
+    return (
+      <View style={styles.indicatorContainer}>
+        <ActivityIndicator size="large" color="#007bff" />
+      </View>
+    );
+  }
 
   return (
     <Screen>
@@ -29,6 +55,9 @@ const HomeScreen = () => {
         </View>
         <TouchableOpacity onPress={navigateToLogin} style={styles.button}>
           <Text style={styles.buttonText}>Get started</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={navigateToChat} style={styles.button}>
+          <Text style={styles.buttonText}>Go to chat</Text>
         </TouchableOpacity>
       </View>
     </Screen>
@@ -78,5 +107,10 @@ const styles = StyleSheet.create({
   image: {
     width: hp(17),
     height: hp(17),
+  },
+  indicatorContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    textAlign: "center",
   },
 });

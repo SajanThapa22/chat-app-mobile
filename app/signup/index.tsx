@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import {
   widthPercentageToDP as wp,
@@ -22,16 +22,20 @@ import CustomKeyboardView from "@/components/shared/CustomKeyboardView";
 import { useAuth } from "@/contexts/AuthContext";
 
 const SignUpScreen = () => {
-  const { register } = useAuth();
+  const { register, isAuthenticated, loading: authLoading } = useAuth();
   const router = useRouter();
+  const [userName, setUserName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [profileUrl, setProfileUrl] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
   const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
 
-  const emailRef = useRef<string>("");
-  const passwordRef = useRef<string>("");
-  const userNameRef = useRef<string>("");
-  const profileRef = useRef<string>("");
+  useEffect(() => {
+    if (!authLoading && isAuthenticated) {
+      router.replace("/chat" as Href);
+    }
+  }, [authLoading, isAuthenticated]);
 
   const redirectToLogin = () => {
     router.push("/login" as Href);
@@ -39,21 +43,17 @@ const SignUpScreen = () => {
 
   const handleRegister = async () => {
     if (
-      !emailRef.current.trim() ||
-      !passwordRef.current.trim() ||
-      !profileRef.current.trim()
+      !email.trim() ||
+      !password.trim() ||
+      !profileUrl.trim() ||
+      !userName.trim()
     ) {
       Alert.alert("Sign Up", "Please fill all the fields");
       return;
     }
     setLoading(true);
 
-    const response = await register(
-      emailRef.current,
-      passwordRef.current,
-      userNameRef.current,
-      profileRef.current
-    );
+    const response = await register(email, password, userName, profileUrl);
 
     setLoading(false);
 
@@ -61,7 +61,7 @@ const SignUpScreen = () => {
       Alert.alert("Sign Up", response.message);
       return;
     } else {
-      router.replace("login" as Href);
+      router.replace("/login" as Href);
     }
   };
 
@@ -79,7 +79,8 @@ const SignUpScreen = () => {
             <View style={styles.inputsContainer}>
               <Feather name="user" size={hp(2.7)} color="gray" />
               <TextInput
-                onChangeText={(value) => (userNameRef.current = value)}
+                value={userName}
+                onChangeText={setUserName}
                 placeholder="User name"
                 placeholderTextColor="gray"
                 style={styles.input}
@@ -89,7 +90,8 @@ const SignUpScreen = () => {
             <View style={styles.inputsContainer}>
               <Feather name="mail" size={hp(2.7)} color="gray" />
               <TextInput
-                onChangeText={(value) => (emailRef.current = value)}
+                value={email}
+                onChangeText={setEmail}
                 placeholder="Email address"
                 placeholderTextColor="gray"
                 style={styles.input}
@@ -99,27 +101,32 @@ const SignUpScreen = () => {
             <View style={styles.inputsContainer}>
               <Feather name="lock" size={hp(2.7)} color="gray" />
               <TextInput
-                onChangeText={(value) => (passwordRef.current = value)}
+                value={password}
+                onChangeText={setPassword}
                 placeholder="Password"
                 placeholderTextColor="gray"
                 secureTextEntry={!passwordVisible}
                 style={styles.input}
               />
-              <TouchableOpacity
-                onPress={() => setPasswordVisible(!passwordVisible)}
-              >
-                <Feather
-                  name={passwordVisible ? "eye" : "eye-off"}
-                  size={hp(2.3)}
-                  color="gray"
-                />
-              </TouchableOpacity>
+
+              {password.trim() !== "" && (
+                <TouchableOpacity
+                  onPress={() => setPasswordVisible(!passwordVisible)}
+                >
+                  <Feather
+                    name={passwordVisible ? "eye" : "eye-off"}
+                    size={hp(2.3)}
+                    color="gray"
+                  />
+                </TouchableOpacity>
+              )}
             </View>
 
             <View style={styles.inputsContainer}>
               <Feather name="image" size={hp(2.7)} color="gray" />
               <TextInput
-                onChangeText={(value) => (profileRef.current = value)}
+                value={profileUrl}
+                onChangeText={setProfileUrl}
                 placeholder="Profile url"
                 placeholderTextColor="gray"
                 style={styles.input}

@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import {
   widthPercentageToDP as wp,
@@ -22,35 +22,39 @@ import CustomKeyboardView from "@/components/shared/CustomKeyboardView";
 import { useAuth } from "@/contexts/AuthContext";
 
 const LoginScreen = () => {
-  const { login } = useAuth();
+  const { login, isAuthenticated, loading: authLoading } = useAuth();
   const router = useRouter();
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
 
-  const emailRef = useRef<string>("");
-  const passwordRef = useRef<string>("");
+  useEffect(() => {
+    if (!authLoading && isAuthenticated) {
+      router.replace("/chat" as Href);
+    }
+  }, [authLoading, isAuthenticated]);
 
   const redirectToSignUp = () => {
     router.push("/signup" as Href);
   };
 
   const handleLogin = async () => {
-    if (!emailRef.current || !passwordRef.current) {
+    if (!email.trim() || !password.trim()) {
       Alert.alert("Login", "Please fill all the fields");
       return;
     }
     setLoading(true);
 
-    const response = await login(emailRef.current, passwordRef.current);
+    const response = await login(email, password);
 
     setLoading(false);
 
     if (!response.success) {
       Alert.alert("Login", response.message);
       return;
-    } else {
-      router.replace("chat" as Href);
     }
+    router.replace("/chat" as Href);
   };
 
   return (
@@ -67,9 +71,11 @@ const LoginScreen = () => {
             <View style={styles.inputsContainer}>
               <Feather name="mail" size={hp(2.7)} color="gray" />
               <TextInput
-                onChangeText={(value) => (emailRef.current = value)}
+                value={email}
+                onChangeText={setEmail}
                 placeholder="Email address"
                 placeholderTextColor="gray"
+                keyboardType="email-address"
                 style={styles.input}
               />
             </View>
@@ -77,21 +83,25 @@ const LoginScreen = () => {
             <View style={styles.inputsContainer}>
               <Feather name="lock" size={hp(2.7)} color="gray" />
               <TextInput
-                onChangeText={(value) => (passwordRef.current = value)}
+                value={password}
+                onChangeText={setPassword}
                 placeholder="Password"
                 placeholderTextColor="gray"
                 secureTextEntry={!passwordVisible}
                 style={styles.input}
               />
-              <TouchableOpacity
-                onPress={() => setPasswordVisible(!passwordVisible)}
-              >
-                <Feather
-                  name={passwordVisible ? "eye" : "eye-off"}
-                  size={hp(2.3)}
-                  color="gray"
-                />
-              </TouchableOpacity>
+
+              {password.trim() !== "" && (
+                <TouchableOpacity
+                  onPress={() => setPasswordVisible(!passwordVisible)}
+                >
+                  <Feather
+                    name={passwordVisible ? "eye" : "eye-off"}
+                    size={hp(2.3)}
+                    color="gray"
+                  />
+                </TouchableOpacity>
+              )}
             </View>
 
             <TouchableOpacity style={styles.forgotPassword}>

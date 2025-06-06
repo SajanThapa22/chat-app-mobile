@@ -1,15 +1,39 @@
 import ChatList from "@/components/chat/ChatList";
 import Screen from "@/components/shared/Screen";
 import { chatListData } from "@/constants/ChatList";
-import React from "react";
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import { useAuth } from "@/contexts/AuthContext";
+import { useRouter } from "expo-router";
+import React, { useEffect } from "react";
+import {
+  Image,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import SearchIcon from "react-native-vector-icons/MaterialIcons";
 
-const index = () => {
+const ChatScreen = () => {
+  const { user, logout, loading: authLoading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.replace("/login");
+    }
+  }, [user, authLoading]);
+
   return (
     <Screen>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>messenger</Text>
+
+        {user && (
+          <TouchableOpacity onPress={logout} style={styles.logoutButton}>
+            <Text style={styles.logoutButtonText}>Logout</Text>
+          </TouchableOpacity>
+        )}
       </View>
 
       <View style={styles.inputContainer}>
@@ -22,7 +46,7 @@ const index = () => {
   );
 };
 
-export default index;
+export default ChatScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -33,6 +57,8 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingBottom: 10,
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   headerTitle: {
     color: "#006aff",
@@ -51,5 +77,18 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
     flex: 1,
     fontSize: 16,
+  },
+  logoutButton: {
+    borderRadius: 10,
+    backgroundColor: "dodgerblue",
+    width: "auto",
+    paddingHorizontal: 8,
+    paddingVertical: 5,
+  },
+  logoutButtonText: {
+    fontSize: 14,
+    fontWeight: "semibold",
+    color: "#ffffff",
+    textAlign: "center",
   },
 });
