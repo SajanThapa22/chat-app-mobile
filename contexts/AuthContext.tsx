@@ -1,4 +1,4 @@
-import { onAuthStateChanged, User } from "firebase/auth";
+import { onAuthStateChanged, User, UserProfile } from "firebase/auth";
 import {
   createContext,
   ReactNode,
@@ -8,9 +8,12 @@ import {
 } from "react";
 import authService from "@/services/authService";
 import { auth } from "@/services/firebaseConfig";
+import databaseService from "@/services/databaseService";
+import { UserProfileData } from "@/types/user";
 
 interface AuthContextType {
   user: User | null;
+  userProfileData: UserProfileData | null;
   isAuthenticated: boolean;
   register: (
     email: string,
@@ -38,6 +41,8 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: Props) => {
   const [user, setUser] = useState<User | null>(null);
+  const [userProfileData, setUserProfileData] =
+    useState<UserProfileData | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -47,6 +52,7 @@ export const AuthProvider = ({ children }: Props) => {
       if (user) {
         setIsAuthenticated(true);
         setUser(user);
+        updateUserData(user.uid);
       } else {
         setIsAuthenticated(false);
         setUser(null);
@@ -55,6 +61,17 @@ export const AuthProvider = ({ children }: Props) => {
     });
     return unsub;
   }, []);
+
+  const updateUserData = async (userId: string) => {
+    const userData = await databaseService.getUserData(userId);
+    if (userData) {
+      setUserProfileData({
+        user_id: userData.user_id,
+        user_name: userData.user_name,
+        profile_url: userData.profile_url,
+      });
+    }
+  };
 
   const register = async (
     email: string,
@@ -77,7 +94,15 @@ export const AuthProvider = ({ children }: Props) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, isAuthenticated, loading, register, login, logout }}
+      value={{
+        user,
+        userProfileData,
+        isAuthenticated,
+        loading,
+        register,
+        login,
+        logout,
+      }}
     >
       {children}
     </AuthContext.Provider>
