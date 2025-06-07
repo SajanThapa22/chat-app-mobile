@@ -10,6 +10,7 @@ import authService from "@/services/authService";
 import { auth } from "@/services/firebaseConfig";
 import databaseService from "@/services/databaseService";
 import { UserProfileData } from "@/types/user";
+import chatService from "@/services/chatService";
 
 interface AuthContextType {
   user: User | null;
@@ -63,7 +64,7 @@ export const AuthProvider = ({ children }: Props) => {
   }, []);
 
   const updateUserData = async (userId: string) => {
-    const userData = await databaseService.getUserData(userId);
+    const userData = await chatService.getUserData(userId);
     if (userData) {
       setUserProfileData({
         user_id: userData.user_id,

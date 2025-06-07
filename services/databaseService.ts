@@ -41,8 +41,8 @@ const databaseService = {
   /**
    * Get a document by path
    */
-  async get(docPath: string) {
-    const docRef = doc(db, docPath);
+  async get(docPath: string, user_id: string) {
+    const docRef = doc(db, docPath, user_id);
     const snapshot = await getDoc(docRef);
     return snapshot.exists() ? snapshot.data() : null;
   },
@@ -61,18 +61,6 @@ const databaseService = {
   async remove(docPath: string) {
     const docRef = doc(db, docPath);
     return await deleteDoc(docRef);
-  },
-
-  async getUserData(userId: string): Promise<UserProfileData | null> {
-    const docRef = doc(db, "users", userId);
-    const docSnap = await getDoc(docRef);
-
-    if (docSnap.exists()) {
-      return docSnap.data();
-    } else {
-      console.warn("No such user!");
-      return null;
-    }
   },
 };
 

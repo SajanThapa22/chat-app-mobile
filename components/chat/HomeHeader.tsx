@@ -2,6 +2,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Image } from "expo-image";
 import React from "react";
 import { blurhash } from "@/constants/common";
+import { Stack } from "expo-router";
 
 interface Props {
   image: string | undefined;
@@ -10,32 +11,43 @@ interface Props {
 
 const HomeHeader: React.FC<Props> = ({ image, onImagePress }) => {
   return (
-    <View style={styles.container}>
-      <Text style={styles.headerTitle}>Messenger</Text>
+    <Stack.Screen
+      options={{
+        title: "",
+        headerShadowVisible: false,
+        headerLeft: () => (
+          <View style={styles.headerLeft}>
+            <Text style={styles.headerTitle}>messenger</Text>
+          </View>
+        ),
 
-      <TouchableOpacity onPress={onImagePress}>
-        <Image
-          source={{ uri: image }}
-          style={styles.userImage}
-          placeholder={blurhash}
-          transition={500}
-        />
-      </TouchableOpacity>
-    </View>
+        headerRight: () => (
+          <View style={styles.headerRight}>
+            <TouchableOpacity onPress={onImagePress}>
+              <Image
+                source={{ uri: image }}
+                style={styles.userImage}
+                placeholder={blurhash}
+                transition={500}
+              />
+            </TouchableOpacity>
+          </View>
+        ),
+      }}
+    />
   );
 };
 
 export default HomeHeader;
 
 const styles = StyleSheet.create({
-  container: {
+  headerLeft: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
-    paddingHorizontal: 5,
-    borderBottomLeftRadius: 25,
-    borderBottomRightRadius: 25,
-    paddingBottom: 10,
+    paddingLeft: 10,
+  },
+  headerRight: {
+    alignItems: "flex-end",
   },
   headerTitle: {
     color: "#006aff",

@@ -16,7 +16,9 @@
         "foregroundImage": "./assets/images/chat-logo.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "softwareKeyboardLayoutMode": "resize",
+      "edgeToEdgeEnabled": true,
+      "package": "com.anonymous.chatapp"
     },
     "web": {
       "bundler": "metro",
@@ -29,7 +31,7 @@
         "expo-splash-screen",
         {
           "image": "./assets/images/chat-logo.png",
-          "imageWidth": 200,
+          "imageWidth": 150,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }

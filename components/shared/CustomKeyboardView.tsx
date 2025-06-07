@@ -2,11 +2,15 @@ import {
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
-  Text,
   View,
   ScrollView,
+  Keyboard,
 } from "react-native";
-import React, { ReactNode } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 
 interface Props {
   children: ReactNode;
@@ -15,21 +19,44 @@ interface Props {
 const ios = Platform.OS === "ios";
 
 const CustomKeyboardView: React.FC<Props> = ({ children }) => {
+  const insets = useSafeAreaInsets();
+
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={ios ? "padding" : "height"}
-    >
-      <ScrollView
-        style={{ flex: 1 }}
-        contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
-        bounces={false}
-        showsVerticalScrollIndicator={false}
+    <View style={[styles.container, { paddingBottom: insets.bottom }]}>
+      <KeyboardAvoidingView
+        style={styles.keyboardView}
+        behavior={ios ? "padding" : "height"}
+        keyboardVerticalOffset={90}
       >
-        {children}
-      </ScrollView>
-    </KeyboardAvoidingView>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+          bounces={false}
+          contentContainerStyle={styles.scrollContent}
+        >
+          <View style={styles.innerContainer}>{children}</View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </View>
   );
 };
 
 export default CustomKeyboardView;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#ffffff",
+  },
+  keyboardView: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+  },
+  innerContainer: {
+    flex: 1,
+    width: "100%",
+    justifyContent: "flex-start", // or "space-between" if you're using header/footer
+  },
+});

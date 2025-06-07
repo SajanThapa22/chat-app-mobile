@@ -47,13 +47,13 @@ const styles = StyleSheet.create({
   },
   userNameText: {
     flexDirection: "column",
-    gap: 5,
+    gap: 2,
     justifyContent: "center",
   },
   userName: {
     fontSize: 17,
     color: "#4a4a4a",
-    fontWeight: "700",
+    fontWeight: "600",
     textTransform: "capitalize",
   },
   userText: {

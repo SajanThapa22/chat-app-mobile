@@ -15,7 +15,8 @@ export default Screen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 15,
+    paddingHorizontal: 15,
+    backgroundColor: "#ffffff",
     // paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
 });

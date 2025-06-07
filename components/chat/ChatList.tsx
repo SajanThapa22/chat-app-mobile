@@ -1,21 +1,14 @@
 import { chatListItem } from "@/types/chat";
 import React from "react";
-import { ActivityIndicator, FlatList, StyleSheet, View } from "react-native";
+import { FlatList, StyleSheet } from "react-native";
 import ChatListItem from "./ChatListItem";
 import { UserProfileData } from "@/types/user";
 
 interface Props {
   data: UserProfileData[];
-  loading: boolean;
 }
 
-const ChatList = ({ data, loading }: Props) => {
-  if (loading)
-    return (
-      <View style={styles.container}>
-        <ActivityIndicator />
-      </View>
-    );
+const ChatList = ({ data }: Props) => {
   return (
     <FlatList
       style={styles.container}

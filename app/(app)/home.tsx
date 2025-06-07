@@ -3,7 +3,14 @@ import Screen from "@/components/shared/Screen";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { Alert, StyleSheet, TextInput, View } from "react-native";
+import {
+  ActivityIndicator,
+  Alert,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import SearchIcon from "react-native-vector-icons/MaterialIcons";
 import HomeHeader from "@/components/chat/HomeHeader";
 import { getDocs, orderBy, query, where } from "firebase/firestore";
@@ -42,7 +49,6 @@ const Home = () => {
       querySnapShot.forEach((doc) => {
         data.push({ ...doc.data() });
       });
-      console.log("got users: ", data);
       setUsers(data);
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -68,7 +74,7 @@ const Home = () => {
   };
 
   return (
-    <Screen>
+    <View style={styles.container}>
       <HomeHeader
         onImagePress={handleImagePress}
         image={userProfileData?.profile_url}
@@ -79,12 +85,16 @@ const Home = () => {
         <TextInput style={styles.input} placeholder="Search" />
       </View>
 
-      {users?.length === 0 ? (
+      {usersLoading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator />
+        </View>
+      ) : users.length === 0 ? (
         <NoUserFound />
       ) : (
-        <ChatList loading={usersLoading} data={users} />
+        <ChatList data={users} />
       )}
-    </Screen>
+    </View>
   );
 };
 
@@ -93,9 +103,9 @@ export default Home;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingHorizontal: 14,
     backgroundColor: "#ffffff",
-    padding: 14,
-    paddingTop: 20,
+    paddingTop: 8,
   },
 
   inputContainer: {
@@ -124,5 +134,10 @@ const styles = StyleSheet.create({
     fontWeight: "semibold",
     color: "#ffffff",
     textAlign: "center",
+  },
+  loadingContainer: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
   },
 });
