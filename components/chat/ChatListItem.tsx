@@ -1,21 +1,34 @@
 import { chatListItem } from "@/types/chat";
+import { UserProfileData } from "@/types/user";
+import { UnknownInputParams, useRouter } from "expo-router";
 import React from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 interface Props {
-  data: chatListItem;
+  data: UserProfileData;
 }
 
 const ChatListItem = ({ data }: Props) => {
+  const router = useRouter();
+  const openChatRoom = () => {
+    router.push({
+      pathname: "/chatRoom",
+      params: {
+        user_id: data.user_id,
+        user_name: data.user_name,
+        profile_url: data.profile_url,
+      },
+    });
+  };
   return (
-    <View style={styles.container}>
-      <Image style={styles.image} source={data.image} />
+    <TouchableOpacity onPress={openChatRoom} style={styles.container}>
+      <Image style={styles.image} source={{ uri: data.profile_url }} />
 
       <View style={styles.userNameText}>
         <Text style={styles.userName}>{data.user_name}</Text>
-        <Text style={styles.userText}>{`${data.message} . ${data.time}`}</Text>
+        <Text style={styles.userText}>{`Last message . time`}</Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -38,8 +51,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   userName: {
-    fontSize: 16,
-    color: "#333333",
+    fontSize: 17,
+    color: "#4a4a4a",
+    fontWeight: "700",
+    textTransform: "capitalize",
   },
   userText: {
     fontSize: 14,

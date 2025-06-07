@@ -32,7 +32,7 @@ const auth = initializeAuth(app, {
 const db = getFirestore(app);
 
 // Collection references
-const userRef = collection(db, "users");
+const usersRef = collection(db, "users");
 const roomRef = collection(db, "rooms");
 
-export { app, auth, db, userRef, roomRef, firebaseConfig };
+export { app, auth, db, usersRef, roomRef, firebaseConfig };

@@ -1,8 +1,8 @@
 import { ImageSourcePropType } from "react-native";
 
 export interface chatListItem {
-  image: ImageSourcePropType;
+  profile_url: string;
   user_name: string;
-  message: string;
-  time: string;
+  last_message: string;
+  last_message_time: string;
 }

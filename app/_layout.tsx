@@ -1,10 +1,14 @@
-import { Stack } from "expo-router";
+import { Href, Slot, Stack, useRouter, useSegments } from "expo-router";
 import "react-native-reanimated";
 
-import { AuthProvider } from "@/contexts/AuthContext";
+import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import { useEffect } from "react";
 
-export default function RootLayout() {
-  // const { isAuthenticated } = useAuth();
+const MainLayout = () => {
+  const { isAuthenticated } = useAuth();
+  const segments = useSegments();
+  const router = useRouter();
+
   // const colorScheme = useColorScheme();
   // const [loaded] = useFonts({
   //   SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
@@ -14,31 +18,27 @@ export default function RootLayout() {
   //   return null;
   // }
 
-  // const segments = useSegments();
-  // const router = useRouter();
+  useEffect(() => {
+    //check if user is authenticated or not
+    if (!isAuthenticated) return;
+    const inApp = segments[0] === "(app)";
 
-  // useEffect(() => {
-  //   //check if user is authenticated or not
-  //   if (typeof isAuthenticated === "undefined") return;
-  //   const inApp = segments[0] === "(app)";
+    if (isAuthenticated && !inApp) {
+      //redirect to home
+      router.replace("/home" as Href);
+    } else if (!isAuthenticated) {
+      //redirect to login
+      router.replace("/login" as Href);
+    }
+  }, [isAuthenticated]);
 
-  //   if (!isAuthenticated && !inApp) {
-  //     //redirect to home
-  //     router.replace("/home" as Href);
-  //   } else if (!isAuthenticated) {
-  //     //redirect to login
-  //     router.replace("/login" as Href);
-  //   }
-  // }, [isAuthenticated]);
+  return <Slot />;
+};
+
+export default function RootLayout() {
   return (
     <AuthProvider>
-      <Stack>
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-        <Stack.Screen name="login" options={{ headerShown: false }} />
-        <Stack.Screen name="signup" options={{ headerShown: false }} />
-        <Stack.Screen name="chat" options={{ headerShown: false }} />
-      </Stack>
+      <MainLayout />
     </AuthProvider>
 
     // <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>

@@ -1,8 +1,8 @@
 import { Stack } from "expo-router";
 import React from "react";
 
-const ChatLayout = () => {
+const AuthLayout = () => {
   return <Stack screenOptions={{ headerShown: false }}></Stack>;
 };
 
-export default ChatLayout;
+export default AuthLayout;
