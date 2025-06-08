@@ -1,33 +1,15 @@
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import Screen from "@/components/shared/Screen";
 import { StatusBar } from "expo-status-bar";
 import ChatRoomHeader from "@/components/chat/ChatRoomHeader";
 import MessageList from "@/components/chat/MessageList";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import CustomKeyboardView from "@/components/shared/CustomKeyboardView";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "@/contexts/AuthContext";
 import chatService from "@/services/chatService";
-import { db } from "@/services/firebaseConfig";
-import {
-  collection,
-  doc,
-  DocumentData,
-  onSnapshot,
-  orderBy,
-  query,
-  Timestamp,
-  Unsubscribe,
-} from "firebase/firestore";
+import { DocumentData, Timestamp, Unsubscribe } from "firebase/firestore";
 import { MessageType } from "@/types/chat";
 
 const ChatRoom = () => {

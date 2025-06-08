@@ -1,6 +1,5 @@
-import { StyleSheet, Text, View, ScrollView } from "react-native";
+import { StyleSheet, ScrollView } from "react-native";
 import React from "react";
-import { MessageType } from "@/types/chat";
 import MessageListItem from "./MessageListItem";
 import { UserProfileData } from "@/types/user";
 import { DocumentData } from "firebase/firestore";

@@ -1,4 +1,3 @@
-import { chatListItem } from "@/types/chat";
 import React from "react";
 import { FlatList, StyleSheet } from "react-native";
 import ChatListItem from "./ChatListItem";

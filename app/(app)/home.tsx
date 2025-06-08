@@ -1,5 +1,4 @@
-import ChatList from "@/components/chat/ChatList";
-import Screen from "@/components/shared/Screen";
+import ChatList from "@/components/home/ChatList";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -7,16 +6,15 @@ import {
   ActivityIndicator,
   Alert,
   StyleSheet,
-  Text,
   TextInput,
   View,
 } from "react-native";
 import SearchIcon from "react-native-vector-icons/MaterialIcons";
-import HomeHeader from "@/components/chat/HomeHeader";
+import HomeHeader from "@/components/home/HomeHeader";
 import { getDocs, orderBy, query, where } from "firebase/firestore";
 import { usersRef } from "@/services/firebaseConfig";
 import { UserProfileData } from "@/types/user";
-import NoUserFound from "@/components/chat/NoUserFound";
+import NoUserFound from "@/components/home/NoUserFound";
 
 const Home = () => {
   const { user, userProfileData, logout, loading: authLoading } = useAuth();

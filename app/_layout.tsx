@@ -1,9 +1,9 @@
-import { Href, Slot, Stack, useRouter, useSegments } from "expo-router";
+import { Href, Slot, useRouter, useSegments } from "expo-router";
 import "react-native-reanimated";
 
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { useEffect } from "react";
-import { View, ActivityIndicator, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 
 const MainLayout = () => {
   const { isAuthenticated } = useAuth();

@@ -1,6 +1,5 @@
-import { chatListItem } from "@/types/chat";
 import { UserProfileData } from "@/types/user";
-import { UnknownInputParams, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import React from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 

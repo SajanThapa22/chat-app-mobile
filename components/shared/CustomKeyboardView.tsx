@@ -4,13 +4,9 @@ import {
   StyleSheet,
   View,
   ScrollView,
-  Keyboard,
 } from "react-native";
-import React, { ReactNode, useEffect, useState } from "react";
-import {
-  SafeAreaView,
-  useSafeAreaInsets,
-} from "react-native-safe-area-context";
+import React, { ReactNode } from "react";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface Props {
   children: ReactNode;
@@ -50,6 +46,8 @@ const styles = StyleSheet.create({
   },
   keyboardView: {
     flex: 1,
+    flexDirection: "column",
+    justifyContent: "center",
   },
   scrollContent: {
     flexGrow: 1,
