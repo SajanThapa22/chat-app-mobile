@@ -1,38 +1,8 @@
-import { chatLogo } from "@/assets/images";
-import Screen from "@/components/shared/Screen";
-import { useAuth } from "@/contexts/AuthContext";
-import { Href, useRouter } from "expo-router";
-import React, { useEffect } from "react";
-import {
-  ActivityIndicator,
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
+import React from "react";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
+import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 
 const HomeScreen = () => {
-  const { user, loading: authLoading, isAuthenticated } = useAuth();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (!authLoading && isAuthenticated) {
-      router.replace("/chat" as Href);
-    }
-  }, [isAuthenticated, authLoading]);
-
-  const navigateToLogin = () => {
-    router.push("/login" as Href);
-  };
-  const navigateToChat = () => {
-    router.push("/chat" as Href);
-  };
-
   return (
     <View style={styles.indicatorContainer}>
       <ActivityIndicator size="large" color="#007bff" />

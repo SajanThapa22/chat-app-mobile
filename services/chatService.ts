@@ -1,8 +1,18 @@
-import { collection, doc, getDoc, Timestamp } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  query,
+  Timestamp,
+  orderBy,
+  onSnapshot,
+  DocumentData,
+  Unsubscribe,
+} from "firebase/firestore";
 import databaseService from "./databaseService";
 import { db } from "./firebaseConfig";
 import { Alert } from "react-native";
-import { SendMessage } from "@/types/chat";
+import { MessageType } from "@/types/chat";
 import { UserProfileData } from "@/types/user";
 
 const chatService = {
@@ -34,14 +44,14 @@ const chatService = {
   },
 
   //Get room id
-  getRoomId(userId1: string, userId2: string | string[]) {
+  getRoomId(userId1: string | undefined, userId2: string | string[]) {
     const sortedIds = [userId1, userId2].sort();
     const roomId = sortedIds.join("-");
     return roomId;
   },
 
   //Send message
-  async sendMessage(roomId: string, userData: SendMessage) {
+  async sendMessage(roomId: string, userData: MessageType) {
     if (!userData) return;
     try {
       const docRef = doc(db, "rooms", roomId);
@@ -53,6 +63,29 @@ const chatService = {
       if (error instanceof Error) {
         Alert.alert("Message", error.message);
       }
+    }
+  },
+  async getMessages(
+    roomId: string,
+    callback: (messages: DocumentData[]) => void
+  ): Promise<Unsubscribe | undefined> {
+    try {
+      const docRef = doc(db, "rooms", roomId);
+      const messagesRef = collection(docRef, "messages");
+      const q = query(messagesRef, orderBy("createdAt", "asc"));
+
+      const unsub = onSnapshot(q, (snapshot) => {
+        const allMessages = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        callback(allMessages);
+      });
+
+      return unsub;
+    } catch (error) {
+      console.error("Error getting messages:", error);
+      return undefined;
     }
   },
 };

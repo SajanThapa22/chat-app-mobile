@@ -3,6 +3,7 @@ import "react-native-reanimated";
 
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { useEffect } from "react";
+import { View, ActivityIndicator, StyleSheet } from "react-native";
 
 const MainLayout = () => {
   const { isAuthenticated } = useAuth();
@@ -45,3 +46,11 @@ export default function RootLayout() {
     // </ThemeProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});

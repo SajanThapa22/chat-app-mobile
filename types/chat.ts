@@ -8,7 +8,7 @@ export interface chatListItem {
   last_message_time: string;
 }
 
-export interface SendMessage {
+export interface MessageType {
   user_id: string;
   text: string;
   profile_url: string;

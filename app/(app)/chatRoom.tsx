@@ -18,20 +18,43 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "@/contexts/AuthContext";
 import chatService from "@/services/chatService";
 import { db } from "@/services/firebaseConfig";
-import { doc, Timestamp } from "firebase/firestore";
-import { SendMessage } from "@/types/chat";
+import {
+  collection,
+  doc,
+  DocumentData,
+  onSnapshot,
+  orderBy,
+  query,
+  Timestamp,
+  Unsubscribe,
+} from "firebase/firestore";
+import { MessageType } from "@/types/chat";
 
 const ChatRoom = () => {
   const item = useLocalSearchParams(); //receiver
   const { user, userProfileData } = useAuth();
   const router = useRouter();
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState<DocumentData[]>([]);
 
   const textRef = useRef("");
   const inputRef = useRef<TextInput | null>(null);
 
   useEffect(() => {
-    createRoomIfNotExists();
+    let unsubscribe: Unsubscribe | undefined;
+
+    const setupChat = async () => {
+      await createRoomIfNotExists();
+      unsubscribe = await getMessages();
+    };
+
+    setupChat();
+
+    // Cleanup function
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
   }, []);
 
   const createRoomIfNotExists = async () => {
@@ -39,6 +62,14 @@ const ChatRoom = () => {
       const roomId = chatService.getRoomId(user.uid, item.user_id);
       await chatService.createRoom(roomId);
     }
+  };
+
+  const getMessages = async (): Promise<Unsubscribe | undefined> => {
+    if (user?.uid && item?.user_id) {
+      const roomId = chatService.getRoomId(user.uid, item.user_id);
+      return await chatService.getMessages(roomId, setMessages);
+    }
+    return undefined;
   };
 
   const handleSendMessage = async () => {
@@ -54,7 +85,7 @@ const ChatRoom = () => {
           item.user_id
         );
         const message = textRef.current.trim();
-        const data: SendMessage = {
+        const data: MessageType = {
           user_id: userProfileData?.user_id,
           text: message,
           profile_url: userProfileData?.profile_url,
@@ -80,7 +111,7 @@ const ChatRoom = () => {
 
         <View style={styles.chatContainer}>
           <View style={styles.messageContainer}>
-            <MessageList />
+            <MessageList current_user={userProfileData} messages={messages} />
           </View>
 
           <View style={styles.bottomContainer}>

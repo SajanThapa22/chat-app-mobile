@@ -1,11 +1,31 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, ScrollView } from "react-native";
 import React from "react";
+import { MessageType } from "@/types/chat";
+import MessageListItem from "./MessageListItem";
+import { UserProfileData } from "@/types/user";
+import { DocumentData } from "firebase/firestore";
 
-const MessageList = () => {
+interface Messages {
+  messages: DocumentData[];
+  current_user: UserProfileData | null;
+}
+
+const MessageList: React.FC<Messages> = ({ messages, current_user }) => {
   return (
-    <View>
-      <Text>MessageList</Text>
-    </View>
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{ paddingTop: 10 }}
+    >
+      {messages.map((message, index) => {
+        return (
+          <MessageListItem
+            key={index}
+            message={message}
+            current_user={current_user}
+          />
+        );
+      })}
+    </ScrollView>
   );
 };
 

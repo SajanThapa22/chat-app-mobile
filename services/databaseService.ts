@@ -27,9 +27,6 @@ const databaseService = {
     try {
       const docRef = doc(db, collectionName, docId);
       await setDoc(docRef, data);
-      console.log(
-        `Document successfully written to ${collectionName}/${docId}`
-      );
     } catch (error) {
       console.error(
         `Error writing document to ${collectionName}/${docId}:`,
