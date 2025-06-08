@@ -6,6 +6,7 @@ import { SendMessage } from "@/types/chat";
 import { UserProfileData } from "@/types/user";
 
 const chatService = {
+  //Get currently logged in user data
   async getUserData(userId: string): Promise<UserProfileData | null> {
     const docSnapData = await databaseService.get("users", userId);
 
@@ -17,9 +18,7 @@ const chatService = {
     }
   },
   //Create a chat room
-  async createRoom(userId1: string, userId2: string | string[]) {
-    const sortedIds = [userId1, userId2].sort();
-    const roomId = sortedIds.join("-");
+  async createRoom(roomId: string) {
     try {
       const response = await databaseService.set("rooms", roomId, {
         roomId,
@@ -34,12 +33,14 @@ const chatService = {
     }
   },
 
+  //Get room id
   getRoomId(userId1: string, userId2: string | string[]) {
     const sortedIds = [userId1, userId2].sort();
     const roomId = sortedIds.join("-");
     return roomId;
   },
 
+  //Send message
   async sendMessage(roomId: string, userData: SendMessage) {
     if (!userData) return;
     try {
@@ -47,6 +48,7 @@ const chatService = {
       const messagesRef = collection(docRef, "messages");
 
       const newDoc = await databaseService.add(messagesRef, userData);
+      return newDoc;
     } catch (error) {
       if (error instanceof Error) {
         Alert.alert("Message", error.message);

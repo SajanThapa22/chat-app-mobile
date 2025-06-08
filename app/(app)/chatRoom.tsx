@@ -1,4 +1,10 @@
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import Screen from "@/components/shared/Screen";
@@ -22,14 +28,16 @@ const ChatRoom = () => {
   const [messages, setMessages] = useState([]);
 
   const textRef = useRef("");
+  const inputRef = useRef<TextInput | null>(null);
 
-  // useEffect(() => {
-  //   createRoomIfNotExists();
-  // }, []);
+  useEffect(() => {
+    createRoomIfNotExists();
+  }, []);
 
   const createRoomIfNotExists = async () => {
     if (user?.uid && item?.user_id) {
-      await chatService.createRoom(user.uid, item.user_id);
+      const roomId = chatService.getRoomId(user.uid, item.user_id);
+      await chatService.createRoom(roomId);
     }
   };
 
@@ -54,6 +62,11 @@ const ChatRoom = () => {
           createdAt: Timestamp.fromDate(new Date()),
         };
         const newDoc = await chatService.sendMessage(roomId, data);
+
+        console.log("New message sent: ", newDoc?.id);
+      }
+      if (inputRef) {
+        inputRef?.current?.clear();
       }
     } catch (error) {}
   };
@@ -75,13 +88,17 @@ const ChatRoom = () => {
             <FontAwesome6 name="image" color="dodgerblue" size={22} />
             <View style={styles.inputContainer}>
               <TextInput
+                ref={inputRef}
                 onChangeText={(value) => (textRef.current = value)}
                 placeholderTextColor={"#b3b3b3"}
                 style={styles.input}
                 placeholder="Type message..."
               />
             </View>
-            <FontAwesome name="send" color="dodgerblue" size={22} />
+
+            <TouchableOpacity onPress={handleSendMessage}>
+              <FontAwesome name="send" color="dodgerblue" size={22} />
+            </TouchableOpacity>
           </View>
         </View>
       </View>

@@ -33,32 +33,30 @@ const HomeScreen = () => {
     router.push("/chat" as Href);
   };
 
-  if (authLoading) {
-    return (
-      <View style={styles.indicatorContainer}>
-        <ActivityIndicator size="large" color="#007bff" />
-      </View>
-    );
-  }
-
   return (
-    <Screen>
-      <View style={styles.container}>
-        <View style={styles.intro}>
-          <View style={styles.imageContainer}>
-            <Image source={chatLogo} style={styles.image} />
-          </View>
-          <Text style={styles.title}>Welcome to my chat app</Text>
-          <Text style={styles.subTitle}>
-            Hang out, explore or just talk, Tap below to get started!
-          </Text>
-        </View>
-        <TouchableOpacity onPress={navigateToLogin} style={styles.button}>
-          <Text style={styles.buttonText}>Get started</Text>
-        </TouchableOpacity>
-      </View>
-    </Screen>
+    <View style={styles.indicatorContainer}>
+      <ActivityIndicator size="large" color="#007bff" />
+    </View>
   );
+
+  // return (
+  //   <Screen>
+  //     <View style={styles.container}>
+  //       <View style={styles.intro}>
+  //         <View style={styles.imageContainer}>
+  //           <Image source={chatLogo} style={styles.image} />
+  //         </View>
+  //         <Text style={styles.title}>Welcome to my chat app</Text>
+  //         <Text style={styles.subTitle}>
+  //           Hang out, explore or just talk, Tap below to get started!
+  //         </Text>
+  //       </View>
+  //       <TouchableOpacity onPress={navigateToLogin} style={styles.button}>
+  //         <Text style={styles.buttonText}>Get started</Text>
+  //       </TouchableOpacity>
+  //     </View>
+  //   </Screen>
+  // );
 };
 
 export default HomeScreen;
@@ -107,6 +105,8 @@ const styles = StyleSheet.create({
     height: hp(17),
   },
   indicatorContainer: {
+    flex: 1,
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     textAlign: "center",
