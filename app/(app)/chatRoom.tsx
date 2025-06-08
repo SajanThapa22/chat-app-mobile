@@ -1,4 +1,10 @@
-import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
@@ -11,12 +17,14 @@ import { useAuth } from "@/contexts/AuthContext";
 import chatService from "@/services/chatService";
 import { DocumentData, Timestamp, Unsubscribe } from "firebase/firestore";
 import { MessageType } from "@/types/chat";
+import NoMessage from "@/components/chat/NoMessage";
 
 const ChatRoom = () => {
-  const item = useLocalSearchParams(); //receiver
+  const item = useLocalSearchParams();
   const { user, userProfileData } = useAuth();
   const router = useRouter();
   const [messages, setMessages] = useState<DocumentData[]>([]);
+  const [messagesLoading, setMessagesLoading] = useState<boolean>(false);
 
   const textRef = useRef("");
   const inputRef = useRef<TextInput | null>(null);
@@ -24,10 +32,12 @@ const ChatRoom = () => {
   useEffect(() => {
     let unsubscribe: Unsubscribe | undefined;
 
+    setMessagesLoading(true);
     const setupChat = async () => {
       await createRoomIfNotExists();
       unsubscribe = await getMessages();
     };
+    setTimeout(() => setMessagesLoading(false), 400);
 
     setupChat();
 
@@ -92,9 +102,17 @@ const ChatRoom = () => {
         <View style={styles.divider}></View>
 
         <View style={styles.chatContainer}>
-          <View style={styles.messageContainer}>
-            <MessageList current_user={userProfileData} messages={messages} />
-          </View>
+          {messagesLoading ? (
+            <View style={styles.indicatorContainer}>
+              <ActivityIndicator />
+            </View>
+          ) : messages.length !== 0 ? (
+            <View style={styles.messageContainer}>
+              <MessageList current_user={userProfileData} messages={messages} />
+            </View>
+          ) : (
+            <NoMessage receiver_name={item?.user_name} />
+          )}
 
           <View style={styles.bottomContainer}>
             <FontAwesome name="camera" color="dodgerblue" size={22} />
@@ -133,7 +151,7 @@ const styles = StyleSheet.create({
   chatContainer: {
     flex: 1,
     backgroundColor: "#ffffff",
-    paddingHorizontal: 14,
+    padding: 8,
   },
   messageContainer: {
     flex: 1,
@@ -155,5 +173,12 @@ const styles = StyleSheet.create({
   input: {
     fontSize: 16,
     flex: 1,
+  },
+  indicatorContainer: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    textAlign: "center",
   },
 });

@@ -29,12 +29,6 @@ const LoginScreen = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (!authLoading && isAuthenticated) {
-      router.replace("/chat" as Href);
-    }
-  }, [authLoading, isAuthenticated]);
-
   const redirectToSignUp = () => {
     router.push("/signup" as Href);
   };

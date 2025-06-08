@@ -1,7 +1,6 @@
 import {
   collection,
   doc,
-  getDoc,
   query,
   Timestamp,
   orderBy,
@@ -65,6 +64,8 @@ const chatService = {
       }
     }
   },
+
+  //Get Messages
   async getMessages(
     roomId: string,
     callback: (messages: DocumentData[]) => void

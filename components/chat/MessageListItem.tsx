@@ -61,13 +61,13 @@ export default MessageListItem;
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    marginBottom: 8,
+    marginBottom: 5,
   },
   messageContainer: {
     flexDirection: "row",
     paddingVertical: 10,
     paddingHorizontal: 15,
-    borderRadius: 25,
+    borderRadius: 14,
   },
   messageText: {
     fontSize: hp(1.9),
