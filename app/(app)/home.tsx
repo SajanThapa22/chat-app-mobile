@@ -90,7 +90,7 @@ const Home = () => {
       ) : users.length === 0 ? (
         <NoUserFound />
       ) : (
-        <ChatList data={users} />
+        <ChatList current_user={userProfileData} data={users} />
       )}
     </View>
   );

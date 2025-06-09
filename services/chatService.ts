@@ -7,6 +7,7 @@ import {
   onSnapshot,
   DocumentData,
   Unsubscribe,
+  OrderByDirection,
 } from "firebase/firestore";
 import databaseService from "./databaseService";
 import { db } from "./firebaseConfig";
@@ -68,12 +69,13 @@ const chatService = {
   //Get Messages
   async getMessages(
     roomId: string,
-    callback: (messages: DocumentData[]) => void
+    callback: (messages: DocumentData[]) => void,
+    order?: OrderByDirection
   ): Promise<Unsubscribe | undefined> {
     try {
       const docRef = doc(db, "rooms", roomId);
       const messagesRef = collection(docRef, "messages");
-      const q = query(messagesRef, orderBy("createdAt", "asc"));
+      const q = query(messagesRef, orderBy("createdAt", order || "asc"));
 
       const unsub = onSnapshot(q, (snapshot) => {
         const allMessages = snapshot.docs.map((doc) => ({

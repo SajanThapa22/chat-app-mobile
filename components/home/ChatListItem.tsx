@@ -1,13 +1,52 @@
+import chatService from "@/services/chatService";
 import { UserProfileData } from "@/types/user";
 import { useRouter } from "expo-router";
-import React from "react";
+import { DocumentData, Unsubscribe } from "firebase/firestore";
+import React, { useEffect, useState } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 interface Props {
   data: UserProfileData;
+  current_user: UserProfileData | null;
 }
 
-const ChatListItem = ({ data }: Props) => {
+const ChatListItem = ({ data, current_user }: Props) => {
+  const [lastMessage, setLastMessage] = useState<DocumentData | undefined>(
+    undefined
+  );
+
+  useEffect(() => {
+    let unsubscribe: Unsubscribe | undefined;
+
+    const setupChat = async () => {
+      unsubscribe = await getMessages();
+    };
+
+    setupChat();
+
+    // Cleanup function
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+  });
+
+  const getMessages = async (): Promise<Unsubscribe | undefined> => {
+    if (current_user?.user_id && data?.user_id) {
+      const roomId = chatService.getRoomId(
+        current_user?.user_id,
+        data?.user_id
+      );
+      return await chatService.getMessages(
+        roomId,
+        (allMessages) => setLastMessage(allMessages[0] ?? null),
+        "desc"
+      );
+    }
+    return undefined;
+  };
+
   const router = useRouter();
   const openChatRoom = () => {
     router.push({
@@ -19,13 +58,35 @@ const ChatListItem = ({ data }: Props) => {
       },
     });
   };
+
+  const renderTime = () => {
+    return "11:11";
+  };
+
+  const renderLastMessage = () => {
+    if (typeof lastMessage === "undefined") return "Loading...";
+
+    const truncate = (text: string, maxLength: number) =>
+      text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
+
+    if (lastMessage) {
+      const text = truncate(lastMessage.text, 30);
+      if (current_user?.user_id === lastMessage.user_id) return `You: ${text}`;
+      return text;
+    } else {
+      return "Say Hi 👋";
+    }
+  };
+
   return (
     <TouchableOpacity onPress={openChatRoom} style={styles.container}>
       <Image style={styles.image} source={{ uri: data.profile_url }} />
 
       <View style={styles.userNameText}>
         <Text style={styles.userName}>{data.user_name}</Text>
-        <Text style={styles.userText}>{`Last message . time`}</Text>
+        <Text
+          style={styles.userText}
+        >{`${renderLastMessage()} . ${renderTime()}`}</Text>
       </View>
     </TouchableOpacity>
   );
