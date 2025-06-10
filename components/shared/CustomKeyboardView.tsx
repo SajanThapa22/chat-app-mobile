@@ -22,7 +22,7 @@ const CustomKeyboardView: React.FC<Props> = ({ children }) => {
       <KeyboardAvoidingView
         style={styles.keyboardView}
         behavior={ios ? "padding" : "height"}
-        keyboardVerticalOffset={90}
+        keyboardVerticalOffset={80}
       >
         <ScrollView
           showsVerticalScrollIndicator={false}

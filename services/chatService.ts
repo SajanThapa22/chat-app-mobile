@@ -91,6 +91,55 @@ const chatService = {
       return undefined;
     }
   },
+  formatDate(date: Date): string {
+    const now = new Date();
+    const oneDayMs = 24 * 60 * 60 * 1000;
+    const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const monthNames = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+
+    const isSameDay =
+      date.getDate() === now.getDate() &&
+      date.getMonth() === now.getMonth() &&
+      date.getFullYear() === now.getFullYear();
+
+    if (isSameDay) {
+      let hours = date.getHours();
+      const minutes = date.getMinutes().toString().padStart(2, "0");
+      const ampm = hours >= 12 ? "pm" : "am";
+      hours = hours % 12 || 12;
+      return `${hours}:${minutes} ${ampm}`;
+    }
+
+    const diffInMs = now.getTime() - date.getTime();
+    const diffInDays = Math.floor(diffInMs / oneDayMs);
+
+    if (diffInDays < 7) {
+      return dayNames[date.getDay()];
+    }
+
+    const isSameYear = date.getFullYear() === now.getFullYear();
+
+    if (!isSameYear) {
+      return `${date.getDate()} ${
+        monthNames[date.getMonth()]
+      } ${date.getFullYear()}`;
+    }
+
+    return `${date.getDate()} ${monthNames[date.getMonth()]}`;
+  },
 };
 
 export default chatService;

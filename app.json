@@ -16,7 +16,6 @@
         "foregroundImage": "./assets/images/chat-logo.png",
         "backgroundColor": "#ffffff"
       },
-      "softwareKeyboardLayoutMode": "resize",
       "edgeToEdgeEnabled": true,
       "package": "com.anonymous.chatapp"
     },

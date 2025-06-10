@@ -1,5 +1,7 @@
 import {
   ActivityIndicator,
+  Keyboard,
+  ScrollView,
   StyleSheet,
   TextInput,
   TouchableOpacity,
@@ -23,11 +25,13 @@ const ChatRoom = () => {
   const item = useLocalSearchParams();
   const { user, userProfileData } = useAuth();
   const router = useRouter();
+
   const [messages, setMessages] = useState<DocumentData[]>([]);
   const [messagesLoading, setMessagesLoading] = useState<boolean>(false);
 
   const textRef = useRef("");
   const inputRef = useRef<TextInput | null>(null);
+  const scrollViewRef = useRef<ScrollView | null>(null);
 
   useEffect(() => {
     let unsubscribe: Unsubscribe | undefined;
@@ -41,11 +45,17 @@ const ChatRoom = () => {
 
     setupChat();
 
+    const KeyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      updateScrollView
+    );
+
     // Cleanup function
     return () => {
       if (unsubscribe) {
         unsubscribe();
       }
+      KeyboardDidShowListener.remove();
     };
   }, []);
 
@@ -65,33 +75,37 @@ const ChatRoom = () => {
   };
 
   const handleSendMessage = async () => {
-    try {
-      if (
-        userProfileData?.user_id &&
-        userProfileData.profile_url &&
-        userProfileData.user_name &&
-        item?.user_id
-      ) {
-        const roomId = chatService.getRoomId(
-          userProfileData.user_id,
-          item.user_id
-        );
-        const message = textRef.current.trim();
-        const data: MessageType = {
-          user_id: userProfileData?.user_id,
-          text: message,
-          profile_url: userProfileData?.profile_url,
-          sender_name: userProfileData?.user_name,
-          createdAt: Timestamp.fromDate(new Date()),
-        };
-        const newDoc = await chatService.sendMessage(roomId, data);
+    if (
+      userProfileData?.user_id &&
+      userProfileData.profile_url &&
+      userProfileData.user_name &&
+      item?.user_id
+    ) {
+      const roomId = chatService.getRoomId(
+        userProfileData.user_id,
+        item.user_id
+      );
+      const message = textRef.current.trim();
+      const data: MessageType = {
+        user_id: userProfileData?.user_id,
+        text: message,
+        profile_url: userProfileData?.profile_url,
+        sender_name: userProfileData?.user_name,
+        createdAt: Timestamp.fromDate(new Date()),
+      };
+      const newDoc = await chatService.sendMessage(roomId, data);
 
-        console.log("New message sent: ", newDoc?.id);
-      }
-      if (inputRef) {
-        inputRef?.current?.clear();
-      }
-    } catch (error) {}
+      console.log("New message sent: ", newDoc?.id);
+    }
+    if (inputRef) {
+      inputRef?.current?.clear();
+    }
+  };
+
+  const updateScrollView = () => {
+    setTimeout(() => {
+      scrollViewRef?.current?.scrollToEnd({ animated: true });
+    }, 100);
   };
 
   return (
@@ -108,7 +122,11 @@ const ChatRoom = () => {
             </View>
           ) : messages.length !== 0 ? (
             <View style={styles.messageContainer}>
-              <MessageList current_user={userProfileData} messages={messages} />
+              <MessageList
+                scrollViewRef={scrollViewRef}
+                current_user={userProfileData}
+                messages={messages}
+              />
             </View>
           ) : (
             <NoMessage receiver_name={item?.user_name} />

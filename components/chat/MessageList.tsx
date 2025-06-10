@@ -1,5 +1,5 @@
 import { StyleSheet, ScrollView } from "react-native";
-import React from "react";
+import React, { Ref } from "react";
 import MessageListItem from "./MessageListItem";
 import { UserProfileData } from "@/types/user";
 import { DocumentData } from "firebase/firestore";
@@ -7,6 +7,7 @@ import { DocumentData } from "firebase/firestore";
 interface Messages {
   messages: DocumentData[];
   current_user: UserProfileData | null;
+  scrollViewRef: React.RefObject<ScrollView | null>;
 }
 
 const MessageList: React.FC<Messages> = ({ messages, current_user }) => {

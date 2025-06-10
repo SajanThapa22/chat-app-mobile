@@ -30,7 +30,7 @@ const ChatListItem = ({ data, current_user }: Props) => {
         unsubscribe();
       }
     };
-  });
+  }, []);
 
   const getMessages = async (): Promise<Unsubscribe | undefined> => {
     if (current_user?.user_id && data?.user_id) {
@@ -60,7 +60,10 @@ const ChatListItem = ({ data, current_user }: Props) => {
   };
 
   const renderTime = () => {
-    return "11:11";
+    if (lastMessage) {
+      let date = lastMessage?.createdAt;
+      return chatService.formatDate(new Date(date?.seconds * 1000));
+    }
   };
 
   const renderLastMessage = () => {

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, ActivityIndicator } from "react-native";
 import React from "react";
 import { UserProfileData } from "@/types/user";
 import {
@@ -13,9 +13,12 @@ interface Message {
 }
 
 const MessageListItem: React.FC<Message> = ({ message, current_user }) => {
+  const isCurrentUser = current_user?.user_id === message?.user_id;
+  const sending = message?.pending;
+
   return (
     <>
-      {current_user?.user_id === message?.user_id ? (
+      {isCurrentUser ? (
         <View
           style={[
             styles.container,
@@ -23,13 +26,20 @@ const MessageListItem: React.FC<Message> = ({ message, current_user }) => {
           ]}
         >
           <View style={{ width: wp(80) }}>
-            <View
-              style={[
-                styles.messageContainer,
-                { backgroundColor: "dodgerblue", alignSelf: "flex-end" },
-              ]}
-            >
-              <Text style={styles.messageText}>{message?.text}</Text>
+            <View style={styles.messageWrapper}>
+              <View
+                style={[
+                  styles.messageContainer,
+                  { backgroundColor: "dodgerblue", alignSelf: "flex-end" },
+                ]}
+              >
+                <Text style={styles.messageText}>{message?.text}</Text>
+              </View>
+              {sending && (
+                <View style={styles.loadingIndicator}>
+                  <ActivityIndicator size="small" color="dodgerblue" />
+                </View>
+              )}
             </View>
           </View>
         </View>
@@ -63,6 +73,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginBottom: 5,
   },
+  messageWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-end",
+  },
   messageContainer: {
     flexDirection: "row",
     paddingVertical: 10,
@@ -72,5 +87,10 @@ const styles = StyleSheet.create({
   messageText: {
     fontSize: hp(1.9),
     color: "#ffffff",
+  },
+  loadingIndicator: {
+    marginLeft: 8,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
