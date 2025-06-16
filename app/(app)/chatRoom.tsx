@@ -126,6 +126,7 @@ const ChatRoom = () => {
                 scrollViewRef={scrollViewRef}
                 current_user={userProfileData}
                 messages={messages}
+                user={item}
               />
             </View>
           ) : (

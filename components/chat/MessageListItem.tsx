@@ -6,15 +6,30 @@ import {
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import { DocumentData } from "firebase/firestore";
+import { Image } from "expo-image";
 
 interface Message {
   message: DocumentData;
+  messages: DocumentData[];
   current_user: UserProfileData | null;
+  user: UserProfileData;
+  index: number;
 }
 
-const MessageListItem: React.FC<Message> = ({ message, current_user }) => {
+const MessageListItem: React.FC<Message> = ({
+  message,
+  messages,
+  current_user,
+  user,
+  index,
+}) => {
   const isCurrentUser = current_user?.user_id === message?.user_id;
   const sending = message?.pending;
+
+  const isLast = index === messages.length - 1;
+  const nextMessage = messages[index + 1];
+  const isNextFromCurrentUser = nextMessage?.user_id === current_user?.user_id;
+  const showProfileImage = isLast || isNextFromCurrentUser;
 
   return (
     <>
@@ -50,11 +65,26 @@ const MessageListItem: React.FC<Message> = ({ message, current_user }) => {
             { justifyContent: "flex-start", marginLeft: 12 },
           ]}
         >
-          <View style={{ width: wp(80) }}>
+          <View style={{ width: wp(80), flexDirection: "row", gap: 10 }}>
+            {showProfileImage && (
+              <Image
+                style={{
+                  width: 25,
+                  height: 25,
+                  borderRadius: 25,
+                  alignSelf: "flex-end",
+                }}
+                source={{ uri: user.profile_url }}
+              />
+            )}
             <View
               style={[
                 styles.messageContainer,
-                { backgroundColor: "#c7c7cc", alignSelf: "flex-start" },
+                {
+                  backgroundColor: "#c7c7cc",
+                  alignSelf: "flex-start",
+                  marginLeft: showProfileImage ? 0 : 35,
+                },
               ]}
             >
               <Text style={styles.messageText}>{message?.text}</Text>
